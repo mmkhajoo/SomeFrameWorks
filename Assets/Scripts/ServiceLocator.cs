@@ -28,30 +28,43 @@ public static class ServiceLocator
          _scopeDictionary.Add(scope,new Dictionary<Type, object>());
    }
 
-   public static void Register<T>(object service,string scope = _globalScope) where T : IService
-   { 
-      var type = service.GetType();
-
-      var tType = typeof(T);
-
-      if (type.IsInterface)
-         throw new DataException($"Object : {type.FullName} Is A Interface");
-
-      var hasInterface = type.GetInterfaces().Contains(tType);
-      
-      if(!hasInterface)
-          throw new DataException($"Object : {type.FullName} Doesn't Have Interface Type of {tType}");
-
-      if (_scopeDictionary[scope].ContainsKey(tType))
+   public static void RemoveScope(string scope)
+   {
+      if (_scopeDictionary.ContainsKey(scope))
       {
-         Debug.LogWarning($"Duplication For {type.FullName} Kept The First One added");
-         return;
+         foreach (var service in _scopeDictionary[scope])
+         {
+            var serviceValue = (IScopeService) service.Value;
+            serviceValue.Dispose();
+         }
+         
+         _scopeDictionary.Remove(scope);
       }
-      
-      _scopeDictionary[scope].Add(tType,service);
+      else 
+      {
+#if lOG_ENABLE
+            Debug.LogError($"Scope:{scope} not exsits!");
+#endif
+      }
    }
 
-   public static T Resolve<T>() where T : IService
+   public static void Register<T>(object service,string scope = _globalScope) where T : IServiceable
+   {
+      var tType = typeof(T);
+
+      if (IsValidRegistration(tType, service))
+      {
+         if (_scopeDictionary[scope].ContainsKey(tType))
+         {
+            Debug.LogWarning($"Duplication For {service.GetType().FullName} Kept The First One added");
+            return;
+         }
+      
+         _scopeDictionary[scope].Add(tType,service);
+      }
+   }
+
+   public static T Resolve<T>() where T : IServiceable
    {
       var type = typeof(T);
 
@@ -63,5 +76,26 @@ public static class ServiceLocator
       }
       
       throw new DataException($"Service Locator Doesn't Have Service Type Of {type.FullName} In {_currentScope} Scope");
+   }
+
+
+   private static bool IsValidRegistration(Type type, object service)
+   {
+      if (type.IsInterface)
+      {
+         Debug.LogError($"Object : {type.FullName} Is A Interface");
+         return false;
+      }
+      
+      var hasInterface = service.GetType().GetInterfaces().Contains(type);
+
+      if (!hasInterface)
+      {
+         Debug.LogError($"Object : {type.FullName} Doesn't Have Interface Type of {type}");
+
+         return false;
+      }
+
+      return true;
    }
 }

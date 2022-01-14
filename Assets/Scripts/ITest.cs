@@ -1,6 +1,6 @@
 ﻿namespace DefaultNamespace
 {
-    public interface ITest : IService
+    public interface ITest : IServiceable
     {
         void HelloWorld();
     }

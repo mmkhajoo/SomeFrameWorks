@@ -1,0 +1,13 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/contentModel.xml
+/modules.xml
+/projectSettingsUpdater.xml
+/.idea.SomeFrameWorks.iml
+# Datasource local storage ignored files
+/../../../../../../:\Unity[Jobs]\SomeFrameWorks\.idea\.idea.SomeFrameWorks\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/

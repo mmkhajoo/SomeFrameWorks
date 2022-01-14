@@ -15,7 +15,7 @@ namespace DefaultNamespace
 
         private void Start()
         {
-            StartCoroutine(Wait());
+            // StartCoroutine(Wait());
         }
 
 
