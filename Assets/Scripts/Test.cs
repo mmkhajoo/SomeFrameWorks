@@ -6,7 +6,7 @@ namespace DefaultNamespace
     {
         public Test()
         {
-            ServiceLocator.Register<Test>(this);
+            ServiceLocator.Register<ITest>(this);
         }
 
         public void Initialize()
